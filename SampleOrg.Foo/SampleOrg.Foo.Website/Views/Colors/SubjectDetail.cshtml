@@ -1,0 +1,73 @@
+@model (SampleOrg.Foo.Website.Models.ColorEntry Color, SampleOrg.Foo.Website.Models.SubjectEntry Subject, int RoleIndex, SampleOrg.Foo.Website.Models.ColorEntry[] OtherColors, SampleOrg.Foo.Website.Models.SubjectEntry[] OtherSubjects)
+@{
+    ViewData["Title"] = $"{Model.Color.Name} \u00d7 {Model.Subject.Name}";
+    var roleLabel = Model.RoleIndex switch
+    {
+        0 => "Primary color",
+        1 => "Secondary color",
+        2 => "Tertiary color",
+        _ => $"Color #{Model.RoleIndex + 1}"
+    };
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/colors">Colors</a></li>
+        <li class="breadcrumb-item"><a href="/colors/@Model.Color.Slug">@Model.Color.Name</a></li>
+        <li class="breadcrumb-item"><a href="/colors/@Model.Color.Slug/subjects">Subjects</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Subject.Name</li>
+    </ol>
+</nav>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-3">
+        <div style="width:100%;aspect-ratio:1;background-color:@Model.Color.Hex;border-radius:8px;border:1px solid rgba(0,0,0,0.1);box-shadow:0 2px 8px rgba(0,0,0,0.12);"></div>
+    </div>
+    <div class="col-md-9 d-flex flex-column justify-content-center">
+        <h1 class="mb-1">@Model.Color.Name &times; @Model.Subject.Name</h1>
+        <div class="d-flex gap-2 align-items-center">
+            <span class="text-muted">@Model.Subject.Category</span>
+            <span class="text-muted">&middot;</span>
+            <span class="badge bg-light text-dark border" style="font-weight:500;">@roleLabel</span>
+        </div>
+    </div>
+</div>
+
+@if (Model.OtherColors.Length > 0)
+{
+    <section class="mb-5">
+        <h2 class="h5 mb-3">Other colors of @Model.Subject.Name</h2>
+        <div class="d-flex flex-wrap gap-3">
+            @foreach (var c in Model.OtherColors)
+            {
+                <a href="/colors/@c.Slug/subjects/@Model.Subject.Id" class="text-decoration-none text-center" style="width:90px;">
+                    <div style="height:56px;border-radius:8px;background-color:@c.Hex;border:1px solid rgba(0,0,0,0.08);box-shadow:0 1px 3px rgba(0,0,0,0.1);transition:transform .15s,box-shadow .15s;"
+                         onmouseover="this.style.transform='scale(1.07)';this.style.boxShadow='0 4px 10px rgba(0,0,0,0.2)'"
+                         onmouseout="this.style.transform='';this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)'"></div>
+                    <div class="mt-1" style="font-size:.75rem;color:#555;line-height:1.2;">@c.Name</div>
+                </a>
+            }
+        </div>
+    </section>
+}
+
+@if (Model.OtherSubjects.Length > 0)
+{
+    <section class="mb-5">
+        <h2 class="h5 mb-3">Other subjects with @Model.Color.Name</h2>
+        <ul class="list-group list-group-flush">
+            @foreach (var s in Model.OtherSubjects)
+            {
+                <li class="list-group-item px-0">
+                    <a href="/colors/@Model.Color.Slug/subjects/@s.Id" class="text-decoration-none fw-medium">@s.Name</a>
+                    <span class="text-muted ms-2" style="font-size:.85rem;">@s.Category</span>
+                </li>
+            }
+        </ul>
+    </section>
+}
+
+<div class="d-flex gap-2 mt-2">
+    <a href="/colors/@Model.Color.Slug/subjects" class="btn btn-outline-secondary">&larr; Back to @Model.Color.Name: Subjects</a>
+    <a href="/subjects/@Model.Subject.Id" class="btn btn-outline-primary">Go to @Model.Subject.Name &rarr;</a>
+</div>

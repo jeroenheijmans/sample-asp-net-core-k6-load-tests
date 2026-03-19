@@ -26,7 +26,7 @@ else
         @foreach (var subject in Model.Subjects)
         {
             <li class="list-group-item px-0">
-                <a href="/subjects/@subject.Id" class="text-decoration-none fw-medium">@subject.Name</a>
+                <a href="/colors/@Model.Color.Slug/subjects/@subject.Id" class="text-decoration-none fw-medium">@subject.Name</a>
                 <span class="text-muted ms-2" style="font-size:.85rem;">@subject.Category</span>
             </li>
         }

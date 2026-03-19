@@ -31,7 +31,7 @@
                     {
                         @if (Model.ColorsBySlug.TryGetValue(slug, out var color))
                         {
-                            <a href="/colors/@slug" class="badge text-decoration-none me-1"
+                            <a href="/colors/@slug/subjects/@subject.Id" class="badge text-decoration-none me-1"
                                style="background-color:@color.Hex;color:#fff;text-shadow:0 0 3px rgba(0,0,0,0.6);border:1px solid #ccc">@color.Name</a>
                         }
                         else

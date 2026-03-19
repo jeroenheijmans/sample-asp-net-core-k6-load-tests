@@ -28,7 +28,7 @@ else
             var color = Model.Colors[i];
             if (color is not null)
             {
-                <a href="/colors/@slug" class="text-decoration-none">
+                <a href="/colors/@slug/subjects/@Model.Subject.Id" class="text-decoration-none">
                     <div style="background-color:@color.Hex;height:80px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);box-shadow:0 1px 3px rgba(0,0,0,0.12);transition:transform .15s,box-shadow .15s;"
                          onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.22)'"
                          onmouseout="this.style.transform='';this.style.boxShadow='0 1px 3px rgba(0,0,0,0.12)'"></div>
