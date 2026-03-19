@@ -3,7 +3,13 @@
     ViewData["Title"] = "Colors";
 }
 
-<h2 class="mb-4">ISCC-NBS Colors</h2>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Colors</li>
+    </ol>
+</nav>
+
+<h1 class="mb-4">ISCC-NBS Colors</h1>
 <table class="table table-hover align-middle">
     <thead class="table-light">
         <tr>
@@ -18,7 +24,9 @@
         {
             <tr>
                 <td>
-                    <div style="width:40px;height:24px;background-color:@color.Hex;border:1px solid #ccc;border-radius:3px;"></div>
+                    <a href="/colors/@color.Slug">
+                        <div style="width:40px;height:24px;background-color:@color.Hex;border:1px solid #ccc;border-radius:3px;"></div>
+                    </a>
                 </td>
                 <td><a href="/colors/@color.Slug">@color.Name</a></td>
                 <td>@color.Category</td>

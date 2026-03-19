@@ -29,3 +29,21 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+/* Nav links */
+.nav-link-custom {
+  color: #333;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.nav-link-custom:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+  color: #333;
+}
+
+.nav-link-active {
+  background-color: rgba(0, 0, 0, 0.12);
+  color: #111 !important;
+  font-weight: 600;
+}

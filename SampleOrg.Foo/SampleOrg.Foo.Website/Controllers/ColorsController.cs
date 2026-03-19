@@ -21,4 +21,16 @@ public class ColorsController : Controller
         if (color is null) return NotFound();
         return View(color);
     }
+
+    [HttpGet("{slug}/subjects")]
+    public IActionResult Subjects(string slug)
+    {
+        var color = AllColors.FirstOrDefault(c => c.Slug == slug);
+        if (color is null) return NotFound();
+        var subjects = SubjectData.AllSubjects
+            .Where(s => s.ColorSlugs.Contains(slug))
+            .OrderBy(s => s.Name)
+            .ToArray();
+        return View((color, subjects));
+    }
 }
