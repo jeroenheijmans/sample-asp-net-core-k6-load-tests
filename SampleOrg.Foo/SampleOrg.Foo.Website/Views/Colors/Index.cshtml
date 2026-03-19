@@ -1,0 +1,29 @@
+@model SampleOrg.Foo.Website.Models.ColorEntry[]
+@{
+    ViewData["Title"] = "Colors";
+}
+
+<h2 class="mb-4">ISCC-NBS Colors</h2>
+<table class="table table-hover align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>Swatch</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Hex</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var color in Model)
+        {
+            <tr>
+                <td>
+                    <div style="width:40px;height:24px;background-color:@color.Hex;border:1px solid #ccc;border-radius:3px;"></div>
+                </td>
+                <td><a href="/colors/@color.Slug">@color.Name</a></td>
+                <td>@color.Category</td>
+                <td><code>@color.Hex</code></td>
+            </tr>
+        }
+    </tbody>
+</table>

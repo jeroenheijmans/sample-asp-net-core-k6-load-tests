@@ -1,0 +1,129 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SampleOrg.Foo.Website.Models;
+
+namespace SampleOrg.Foo.Website.Controllers;
+
+[Authorize]
+[Route("subjects")]
+public class SubjectsController : Controller
+{
+    private static readonly SubjectEntry[] AllSubjects =
+    [
+        new(  1, "Apple",          "Fruit",  ["red", "yellow-green", "green"]),
+        new(  2, "Banana",         "Fruit",  ["yellow"]),
+        new(  3, "Orange",         "Fruit",  ["orange"]),
+        new(  4, "Blueberry",      "Fruit",  ["blue", "purplish-blue"]),
+        new(  5, "Strawberry",     "Fruit",  ["red"]),
+        new(  6, "Grape",          "Fruit",  ["green", "purple", "reddish-purple"]),
+        new(  7, "Lemon",          "Fruit",  ["yellow"]),
+        new(  8, "Lime",           "Fruit",  ["green", "greenish-yellow"]),
+        new(  9, "Cherry",         "Fruit",  ["red", "purplish-red"]),
+        new( 10, "Peach",          "Fruit",  ["pink", "orange-yellow"]),
+        new( 11, "Pear",           "Fruit",  ["green", "yellow", "brownish-orange"]),
+        new( 12, "Plum",           "Fruit",  ["purple", "bluish-purple"]),
+        new( 13, "Raspberry",      "Fruit",  ["red", "purplish-red"]),
+        new( 14, "Blackberry",     "Fruit",  ["black", "bluish-purple"]),
+        new( 15, "Pineapple",      "Fruit",  ["yellowish-brown", "orange-yellow"]),
+        new( 16, "Mango",          "Fruit",  ["orange", "yellow", "reddish-orange"]),
+        new( 17, "Watermelon",     "Fruit",  ["green", "red", "pink"]),
+        new( 18, "Kiwi",           "Fruit",  ["brown", "yellow-green"]),
+        new( 19, "Coconut",        "Fruit",  ["brown", "white"]),
+        new( 20, "Apricot",        "Fruit",  ["orange"]),
+        new( 21, "Cantaloupe",     "Fruit",  ["orange", "yellowish-brown"]),
+        new( 22, "Pomegranate",    "Fruit",  ["red", "purplish-red"]),
+        new( 23, "Fig",            "Fruit",  ["purple", "brownish-orange"]),
+        new( 24, "Dragonfruit",    "Fruit",  ["purplish-pink", "white"]),
+        new( 25, "Papaya",         "Fruit",  ["orange", "green"]),
+        new( 26, "Rose",           "Flower", ["red", "pink", "white", "yellow"]),
+        new( 27, "Tulip",          "Flower", ["red", "yellow", "pink", "purple"]),
+        new( 28, "Sunflower",      "Flower", ["yellow", "brown"]),
+        new( 29, "Daisy",          "Flower", ["white", "yellow"]),
+        new( 30, "Lavender",       "Flower", ["violet", "purplish-blue"]),
+        new( 31, "Lily",           "Flower", ["white", "orange", "pink"]),
+        new( 32, "Orchid",         "Flower", ["purple", "pink", "white"]),
+        new( 33, "Marigold",       "Flower", ["orange", "yellow"]),
+        new( 34, "Poppy",          "Flower", ["red", "orange"]),
+        new( 35, "Hydrangea",      "Flower", ["blue", "pink", "purplish-blue"]),
+        new( 36, "Daffodil",       "Flower", ["yellow", "white"]),
+        new( 37, "Iris",           "Flower", ["purple", "blue", "yellow"]),
+        new( 38, "Peony",          "Flower", ["pink", "red", "white"]),
+        new( 39, "Chrysanthemum",  "Flower", ["yellow", "purplish-red", "white"]),
+        new( 40, "Hibiscus",       "Flower", ["red", "pink", "yellow"]),
+        new( 41, "Lotus",          "Flower", ["pink", "white"]),
+        new( 42, "Pansy",          "Flower", ["purple", "yellow", "violet"]),
+        new( 43, "Dahlia",         "Flower", ["reddish-purple", "orange", "pink"]),
+        new( 44, "Bluebell",       "Flower", ["blue", "purplish-blue"]),
+        new( 45, "Geranium",       "Flower", ["red", "pink"]),
+        new( 46, "Jasmine",        "Flower", ["white"]),
+        new( 47, "Snapdragon",     "Flower", ["yellow", "red", "pink"]),
+        new( 48, "Zinnia",         "Flower", ["orange", "purplish-red"]),
+        new( 49, "Violet Flower",  "Flower", ["violet", "purple"]),
+        new( 50, "Lilac",          "Flower", ["violet", "purplish-pink"]),
+        new( 51, "Gummy Bear",     "Candy",  ["red", "green", "yellow", "orange"]),
+        new( 52, "Candy Cane",     "Candy",  ["red", "white"]),
+        new( 53, "Licorice",       "Candy",  ["black", "red"]),
+        new( 54, "Chocolate Bar",  "Candy",  ["brown", "reddish-brown"]),
+        new( 55, "Cotton Candy",   "Candy",  ["pink", "blue"]),
+        new( 56, "Lollipop",       "Candy",  ["red", "purplish-pink", "blue"]),
+        new( 57, "Jelly Bean",     "Candy",  ["purple", "orange", "green", "yellow"]),
+        new( 58, "Candy Corn",     "Candy",  ["orange", "yellow"]),
+        new( 59, "Marshmallow",    "Candy",  ["white", "pink"]),
+        new( 60, "Toffee",         "Candy",  ["yellowish-brown", "brown"]),
+        new( 61, "Caramel",        "Candy",  ["brownish-orange", "yellowish-brown"]),
+        new( 62, "Bubblegum",      "Candy",  ["pink"]),
+        new( 63, "Taffy",          "Candy",  ["purplish-pink", "greenish-blue"]),
+        new( 64, "Butterscotch",   "Candy",  ["orange-yellow", "yellowish-brown"]),
+        new( 65, "Peppermint",     "Candy",  ["white", "red"]),
+        new( 66, "Sour Worm",      "Candy",  ["green", "reddish-orange", "blue"]),
+        new( 67, "Lemon Drop",     "Candy",  ["yellow"]),
+        new( 68, "Fudge",          "Candy",  ["brown", "olive-brown"]),
+        new( 69, "Rock Candy",     "Candy",  ["blue", "purple", "pink"]),
+        new( 70, "Dark Chocolate", "Candy",  ["brown", "black"]),
+        new( 71, "White Chocolate","Candy",  ["white", "yellowish-brown"]),
+        new( 72, "Mints",          "Candy",  ["blue-green"]),
+        new( 73, "Praline",        "Candy",  ["brown", "yellowish-brown"]),
+        new( 74, "Gobstoppers",    "Candy",  ["red", "purple", "orange"]),
+        new( 75, "Fruit Roll-up",  "Candy",  ["red", "bluish-green"]),
+        new( 76, "Elephant",       "Animal", ["gray"]),
+        new( 77, "Tiger",          "Animal", ["orange", "black"]),
+        new( 78, "Flamingo",       "Animal", ["pink", "purplish-pink"]),
+        new( 79, "Frog",           "Animal", ["green", "yellow-green", "brown"]),
+        new( 80, "Polar Bear",     "Animal", ["white"]),
+        new( 81, "Brown Bear",     "Animal", ["brown", "reddish-brown"]),
+        new( 82, "Panda",          "Animal", ["black", "white"]),
+        new( 83, "Lion",           "Animal", ["yellowish-brown", "orange-yellow"]),
+        new( 84, "Zebra",          "Animal", ["black", "white"]),
+        new( 85, "Parrot",         "Animal", ["green", "red", "blue", "yellow"]),
+        new( 86, "Pig",            "Animal", ["pink"]),
+        new( 87, "Goldfish",       "Animal", ["orange", "reddish-orange"]),
+        new( 88, "Crow",           "Animal", ["black"]),
+        new( 89, "Fox",            "Animal", ["reddish-orange", "white", "brown"]),
+        new( 90, "Deer",           "Animal", ["brown", "yellowish-brown"]),
+        new( 91, "Gorilla",        "Animal", ["black", "gray"]),
+        new( 92, "Crocodile",      "Animal", ["olive-green", "olive"]),
+        new( 93, "Honey Bee",      "Animal", ["yellow", "black"]),
+        new( 94, "Ladybug",        "Animal", ["red", "black"]),
+        new( 95, "Canary",         "Animal", ["yellow"]),
+        new( 96, "Butterfly",      "Animal", ["blue", "orange", "purple"]),
+        new( 97, "Wolf",           "Animal", ["gray", "white", "brown"]),
+        new( 98, "Whale",          "Animal", ["blue", "gray"]),
+        new( 99, "Squirrel",       "Animal", ["brown", "reddish-brown", "gray"]),
+        new(100, "Camel",          "Animal", ["yellowish-brown", "brown"]),
+    ];
+
+    [HttpGet("")]
+    public IActionResult Index()
+        => View((AllSubjects, ColorData.BySlug));
+
+    [HttpGet("{id:int}")]
+    public IActionResult Detail(int id)
+    {
+        var subject = AllSubjects.FirstOrDefault(s => s.Id == id);
+        if (subject is null) return NotFound();
+        var colors = subject.ColorSlugs
+            .Select(slug => ColorData.BySlug.TryGetValue(slug, out var c) ? c : null)
+            .ToArray();
+        return View((subject, colors));
+    }
+}

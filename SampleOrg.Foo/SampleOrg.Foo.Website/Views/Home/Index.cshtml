@@ -1,9 +1,26 @@
-﻿@{
+﻿@using SampleOrg.Foo.Website.Models
+@{
     ViewData["Title"] = "Home Page";
+    var colors = ColorData.AllColors;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome, @User.Identity?.Name!</h1>
-    <p>You are logged in.</p>
-    <a class="btn btn-outline-secondary mt-3" href="/user/logout">Log out</a>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="display-5 mb-1">Welcome, @User.Identity?.Name!</h1>
+        <p class="text-muted mb-0">Browse colors and subjects below.</p>
+    </div>
+    <a class="btn btn-outline-secondary" href="/user/logout">Log out</a>
+</div>
+
+<h5 class="mb-3">Color palette</h5>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:10px;">
+    @foreach (var color in colors)
+    {
+        <a href="/colors/@color.Slug" class="text-decoration-none" title="@color.Name">
+            <div style="background-color:@color.Hex;height:72px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);box-shadow:0 1px 3px rgba(0,0,0,0.12);transition:transform .15s,box-shadow .15s;"
+                 onmouseover="this.style.transform='scale(1.08)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.22)'"
+                 onmouseout="this.style.transform='';this.style.boxShadow='0 1px 3px rgba(0,0,0,0.12)'"></div>
+            <div class="text-center mt-1" style="font-size:.68rem;color:#555;line-height:1.2;">@color.Name</div>
+        </a>
+    }
 </div>

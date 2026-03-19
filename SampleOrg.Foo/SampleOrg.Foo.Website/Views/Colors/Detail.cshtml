@@ -1,0 +1,30 @@
+@model SampleOrg.Foo.Website.Models.ColorEntry
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/colors">Colors</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+    <div class="col-md-3">
+        <div style="width:100%;aspect-ratio:1;background-color:@Model.Hex;border:1px solid #ccc;border-radius:6px;"></div>
+    </div>
+    <div class="col-md-9">
+        <h2>@Model.Name</h2>
+        <table class="table table-bordered w-auto">
+            <tbody>
+                <tr><th scope="row">ID</th><td>@Model.Id</td></tr>
+                <tr><th scope="row">Category</th><td>@Model.Category</td></tr>
+                <tr><th scope="row">Hex</th><td><code>@Model.Hex</code></td></tr>
+                <tr><th scope="row">RGB</th><td>rgb(@Model.R, @Model.G, @Model.B)</td></tr>
+                <tr><th scope="row">Hue</th><td>@Model.Hue&deg;</td></tr>
+            </tbody>
+        </table>
+        <a href="/colors" class="btn btn-outline-secondary">&larr; Back to Colors</a>
+    </div>
+</div>

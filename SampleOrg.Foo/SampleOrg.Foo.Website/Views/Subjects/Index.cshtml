@@ -1,0 +1,40 @@
+@model (SubjectEntry[] Subjects, IReadOnlyDictionary<string, ColorEntry> ColorsBySlug)
+@{
+    ViewData["Title"] = "Subjects";
+}
+
+<h2 class="mb-4">Subjects</h2>
+<table class="table table-hover align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Colors</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var subject in Model.Subjects)
+        {
+            <tr>
+                <td class="text-muted">@subject.Id</td>
+                <td><a href="/subjects/@subject.Id">@subject.Name</a></td>
+                <td>@subject.Category</td>
+                <td>
+                    @foreach (var slug in subject.ColorSlugs)
+                    {
+                        @if (Model.ColorsBySlug.TryGetValue(slug, out var color))
+                        {
+                            <a href="/colors/@slug" class="badge text-decoration-none me-1"
+                               style="background-color:@color.Hex;color:#fff;text-shadow:0 0 3px rgba(0,0,0,0.6);border:1px solid #ccc">@color.Name</a>
+                        }
+                        else
+                        {
+                            <span class="badge bg-light text-dark border me-1">@slug</span>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
