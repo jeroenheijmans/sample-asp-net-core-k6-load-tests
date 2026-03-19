@@ -50,5 +50,11 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        window.addEventListener('beforeunload', () => {
+            document.body.style.transition = 'opacity 0.1s';
+            document.body.style.opacity = '0.35';
+        });
+    </script>
 </body>
 </html>
