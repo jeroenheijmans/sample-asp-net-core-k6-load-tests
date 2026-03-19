@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SampleOrg.Foo.Website.Infrastructure;
 using SampleOrg.Foo.Website.Models;
 
 namespace SampleOrg.Foo.Website.Controllers;
 
 [Authorize]
 [Route("colors")]
+[SimulatedDelay(MedianMs = 60)]
 public class ColorsController : Controller
 {
     // Delegates to the shared ColorData cache — same data available to SubjectsController.
@@ -23,6 +25,7 @@ public class ColorsController : Controller
     }
 
     [HttpGet("{slug}/subjects")]
+    [SimulatedDelay(MedianMs = 1200, Sigma = 0.9)]
     public IActionResult Subjects(string slug)
     {
         var color = AllColors.FirstOrDefault(c => c.Slug == slug);

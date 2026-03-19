@@ -1,9 +1,11 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using SampleOrg.Foo.Website.Infrastructure;
 using SampleOrg.Foo.Website.Models;
 
 namespace SampleOrg.Foo.Website.Controllers;
 
+[SimulatedDelay(MedianMs = 40)]
 public class HomeController : Controller
 {
     [Microsoft.AspNetCore.Authorization.Authorize]

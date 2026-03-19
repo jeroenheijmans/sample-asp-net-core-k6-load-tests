@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SampleOrg.Foo.Website.Infrastructure;
 using SampleOrg.Foo.Website.Models;
 
 namespace SampleOrg.Foo.Website.Controllers;
 
 [Authorize]
 [Route("subjects")]
+[SimulatedDelay(MedianMs = 70)]
 public class SubjectsController : Controller
 {
     private static readonly SubjectEntry[] AllSubjects = SubjectData.AllSubjects;

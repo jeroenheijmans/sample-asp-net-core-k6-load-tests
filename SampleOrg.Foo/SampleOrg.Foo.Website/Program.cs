@@ -1,7 +1,9 @@
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddTransient<SampleOrg.Foo.Website.Infrastructure.SimulatedDelayFilter>();
+builder.Services.AddControllersWithViews(options =>
+    options.Filters.AddService<SampleOrg.Foo.Website.Infrastructure.SimulatedDelayFilter>());
 
 builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

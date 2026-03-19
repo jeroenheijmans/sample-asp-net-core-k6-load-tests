@@ -2,9 +2,11 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using SampleOrg.Foo.Website.Infrastructure;
 
 namespace SampleOrg.Foo.Website.Controllers;
 
+[SimulatedDelay(MedianMs = 80)]
 public class UserController : Controller
 {
     [HttpGet("/user")]
