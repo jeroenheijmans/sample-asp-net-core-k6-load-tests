@@ -6,6 +6,7 @@ namespace SampleOrg.Foo.Website.Controllers;
 
 public class HomeController : Controller
 {
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public IActionResult Index()
     {
         return View();

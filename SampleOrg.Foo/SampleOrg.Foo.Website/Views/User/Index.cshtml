@@ -1,0 +1,25 @@
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <h2 class="mb-4">Log in</h2>
+        <form method="post" action="/user">
+            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" autocomplete="username" required />
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" autocomplete="current-password" required />
+            </div>
+            @if (ViewData["Error"] is string error)
+        {
+            <div class="alert alert-danger mt-3" role="alert">@error</div>
+        }
+        <button type="submit" class="btn btn-primary w-100">Log in</button>
+        </form>
+    </div>
+</div>
