@@ -1,0 +1,7 @@
+{
+  "name": "sampleorg-foo-load-tests",
+  "private": true,
+  "devDependencies": {
+    "@types/k6": "*"
+  }
+}
