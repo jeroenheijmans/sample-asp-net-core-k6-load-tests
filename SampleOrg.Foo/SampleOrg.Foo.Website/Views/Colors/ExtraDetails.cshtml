@@ -1,0 +1,23 @@
+﻿@model SampleOrg.Foo.Website.Models.ColorEntry
+@{
+    ViewData["Title"] = "Extra Details for " + Model.Name;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/colors">Colors</a></li>
+        <li class="breadcrumb-item"><a href="/colors/@Model.Slug">@Model.Name</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Extra Details</li>
+    </ol>
+</nav>
+
+<h1>Extra Details for @Model.Name</h1>
+
+<p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+</p>
+
+<a href="/colors/@Model.Slug" class="btn btn-outline-secondary">&larr; Back to @Model.Name</a>

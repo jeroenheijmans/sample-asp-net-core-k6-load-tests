@@ -24,6 +24,15 @@ public class ColorsController : Controller
         return View(color);
     }
 
+    [HttpGet("{slug}/extra-details")]
+    public IActionResult ExtraDetails(string slug)
+    {
+        var color = AllColors.FirstOrDefault(c => c.Slug == slug);
+        if (color is null) return NotFound();
+        if (color.Category != "Basic") return NotFound();
+        return View(color);
+    }
+
     [HttpGet("{slug}/subjects")]
     [SimulatedDelay(MedianMs = 1200, Sigma = 0.9)]
     public IActionResult Subjects(string slug)

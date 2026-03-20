@@ -105,4 +105,12 @@ export default function (data: SetupData): void {
     'GET /subjects/:subjectId status 200': (r) => r.status === 200,
     'GET /subjects/:subjectId response time <= 1000ms': (r) => r.timings.duration <= 1000,
   });
+
+  const colorExtraDetailsResponse = http.get(http.url`${config.baseDomain}/colors/${colorSlug}/extra-details`);
+  check(colorExtraDetailsResponse, {
+    'GET /colors/:colorSlug/extra-details status 200': (r) => r.status === 200,
+    'GET /colors/:colorSlug/extra-details response time <= 1000ms': (r) => r.timings.duration <= 1000,
+    'GET /colors/:colorSlug/extra-details body contains "Extra Details"': (r) => typeof r.body === 'string' && r.body.includes('Extra Details'),
+    'GET /colors/:colorSlug/extra-details body contains colorSlug': (r) => typeof r.body === 'string' && r.body.includes(colorSlug),
+  });
 }

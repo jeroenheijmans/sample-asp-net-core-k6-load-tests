@@ -27,6 +27,10 @@
             </tbody>
         </table>
         <a href="/colors" class="btn btn-outline-secondary">&larr; Back to Colors</a>
+        @if (Model.Category == "Basic")
+        {
+            <a href="/colors/@Model.Slug/extra-details" class="btn btn-outline-secondary ms-2">More details...</a>
+        }
         <a href="/colors/@Model.Slug/subjects" class="btn btn-outline-primary ms-2">Go to subjects &rarr;</a>
     </div>
 </div>
