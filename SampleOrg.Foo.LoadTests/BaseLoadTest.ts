@@ -1,5 +1,8 @@
+import { open } from 'k6/experimental/fs';
+import csv from 'k6/experimental/csv';
 import http from 'k6/http';
 import { check } from 'k6';
+import { scenario } from 'k6/execution';
 import type { Options } from 'k6/options';
 import { config } from './config.ts';
 
@@ -8,10 +11,14 @@ export const options: Options = {
     base: {
       executor: 'shared-iterations',
       vus: 2,
-      iterations: 5,
+      iterations: 10,
     },
   },
 };
+
+const file = await open('./test-input/base-data.csv');
+const csvRecords = (await csv.parse(file, { delimiter: ',' })) as unknown as string[][];
+const csvDataLength = csvRecords.length - 1; // subtract header row
 
 interface SetupData {
   cookies: Record<string, string>;
@@ -54,6 +61,9 @@ export default function (data: SetupData): void {
     cookieJar.set(`${config.baseDomain}/`, name, value);
   }
 
+  const rowIndex = 1 + (scenario.iterationInTest % csvDataLength);
+  const [colorSlug, subjectId] = csvRecords[rowIndex] as [string, string];
+
   const homeResponse = http.get(`${config.baseDomain}/`);
   check(homeResponse, {
     'GET / status 200': (r) => r.status === 200,
@@ -66,22 +76,22 @@ export default function (data: SetupData): void {
     'GET /colors response time <= 1000ms': (r) => r.timings.duration <= 1000,
   });
 
-  const colorDetailResponse = http.get(`${config.baseDomain}/colors/red`);
+  const colorDetailResponse = http.get(http.url`${config.baseDomain}/colors/${colorSlug}`);
   check(colorDetailResponse, {
-    'GET /colors/red status 200': (r) => r.status === 200,
-    'GET /colors/red response time <= 1000ms': (r) => r.timings.duration <= 1000,
+    'GET /colors/:colorSlug status 200': (r) => r.status === 200,
+    'GET /colors/:colorSlug response time <= 1000ms': (r) => r.timings.duration <= 1000,
   });
 
-  const colorSubjectsResponse = http.get(`${config.baseDomain}/colors/red/subjects`);
+  const colorSubjectsResponse = http.get(http.url`${config.baseDomain}/colors/${colorSlug}/subjects`);
   check(colorSubjectsResponse, {
-    'GET /colors/red/subjects status 200': (r) => r.status === 200,
-    'GET /colors/red/subjects response time <= 1000ms': (r) => r.timings.duration <= 1000,
+    'GET /colors/:colorSlug/subjects status 200': (r) => r.status === 200,
+    'GET /colors/:colorSlug/subjects response time <= 1000ms': (r) => r.timings.duration <= 1000,
   });
 
-  const colorSubjectDetailResponse = http.get(`${config.baseDomain}/colors/red/subjects/1`);
+  const colorSubjectDetailResponse = http.get(http.url`${config.baseDomain}/colors/${colorSlug}/subjects/${subjectId}`);
   check(colorSubjectDetailResponse, {
-    'GET /colors/red/subjects/1 status 200': (r) => r.status === 200,
-    'GET /colors/red/subjects/1 response time <= 1000ms': (r) => r.timings.duration <= 1000,
+    'GET /colors/:colorSlug/subjects/:subjectId status 200': (r) => r.status === 200,
+    'GET /colors/:colorSlug/subjects/:subjectId response time <= 1000ms': (r) => r.timings.duration <= 1000,
   });
 
   const subjectsResponse = http.get(`${config.baseDomain}/subjects`);
@@ -90,9 +100,9 @@ export default function (data: SetupData): void {
     'GET /subjects response time <= 1000ms': (r) => r.timings.duration <= 1000,
   });
 
-  const subjectDetailResponse = http.get(`${config.baseDomain}/subjects/1`);
+  const subjectDetailResponse = http.get(http.url`${config.baseDomain}/subjects/${subjectId}`);
   check(subjectDetailResponse, {
-    'GET /subjects/1 status 200': (r) => r.status === 200,
-    'GET /subjects/1 response time <= 1000ms': (r) => r.timings.duration <= 1000,
+    'GET /subjects/:subjectId status 200': (r) => r.status === 200,
+    'GET /subjects/:subjectId response time <= 1000ms': (r) => r.timings.duration <= 1000,
   });
 }
