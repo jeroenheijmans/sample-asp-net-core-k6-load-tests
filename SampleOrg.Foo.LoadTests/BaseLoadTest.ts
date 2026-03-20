@@ -1,7 +1,7 @@
 import { open } from 'k6/experimental/fs';
 import csv from 'k6/experimental/csv';
 import http from 'k6/http';
-import { check } from 'k6';
+import { check, group } from 'k6';
 import { scenario } from 'k6/execution';
 import type { Options } from 'k6/options';
 import { config } from './config.ts';
@@ -62,55 +62,67 @@ export default function (data: SetupData): void {
   }
 
   const rowIndex = 1 + (scenario.iterationInTest % csvDataLength);
-  const [colorSlug, subjectId] = csvRecords[rowIndex] as [string, string];
+  const row = csvRecords[rowIndex];
+  const colorSlug = row[0];
+  const subjectId = row[1];
+  const colorCategory = row[2];
+  if (!colorSlug || !subjectId || !colorCategory) {
+    throw new Error(`Missing CSV data at row ${rowIndex}`);
+  }
 
-  const homeResponse = http.get(`${config.baseDomain}/`);
-  check(homeResponse, {
-    'GET / status 200': (r) => r.status === 200,
-    'GET / response time <= 1000ms': (r) => r.timings.duration <= 1000,
+  group('general', () => {
+    const homeResponse = http.get(`${config.baseDomain}/`);
+    check(homeResponse, {
+      'GET / status 200': (r) => r.status === 200,
+      'GET / response time <= 1000ms': (r) => r.timings.duration <= 1000,
+    });
+
+    const colorsResponse = http.get(`${config.baseDomain}/colors`);
+    check(colorsResponse, {
+      'GET /colors status 200': (r) => r.status === 200,
+      'GET /colors response time <= 1000ms': (r) => r.timings.duration <= 1000,
+    });
+
+    const colorDetailResponse = http.get(http.url`${config.baseDomain}/colors/${colorSlug}`);
+    check(colorDetailResponse, {
+      'GET /colors/:colorSlug status 200': (r) => r.status === 200,
+      'GET /colors/:colorSlug response time <= 1000ms': (r) => r.timings.duration <= 1000,
+    });
+
+    const colorSubjectsResponse = http.get(http.url`${config.baseDomain}/colors/${colorSlug}/subjects`);
+    check(colorSubjectsResponse, {
+      'GET /colors/:colorSlug/subjects status 200': (r) => r.status === 200,
+      'GET /colors/:colorSlug/subjects response time <= 1000ms': (r) => r.timings.duration <= 1000,
+    });
+
+    const colorSubjectDetailResponse = http.get(http.url`${config.baseDomain}/colors/${colorSlug}/subjects/${subjectId}`);
+    check(colorSubjectDetailResponse, {
+      'GET /colors/:colorSlug/subjects/:subjectId status 200': (r) => r.status === 200,
+      'GET /colors/:colorSlug/subjects/:subjectId response time <= 1000ms': (r) => r.timings.duration <= 1000,
+    });
+
+    const subjectsResponse = http.get(`${config.baseDomain}/subjects`);
+    check(subjectsResponse, {
+      'GET /subjects status 200': (r) => r.status === 200,
+      'GET /subjects response time <= 1000ms': (r) => r.timings.duration <= 1000,
+    });
+
+    const subjectDetailResponse = http.get(http.url`${config.baseDomain}/subjects/${subjectId}`);
+    check(subjectDetailResponse, {
+      'GET /subjects/:subjectId status 200': (r) => r.status === 200,
+      'GET /subjects/:subjectId response time <= 1000ms': (r) => r.timings.duration <= 1000,
+    });
   });
 
-  const colorsResponse = http.get(`${config.baseDomain}/colors`);
-  check(colorsResponse, {
-    'GET /colors status 200': (r) => r.status === 200,
-    'GET /colors response time <= 1000ms': (r) => r.timings.duration <= 1000,
-  });
-
-  const colorDetailResponse = http.get(http.url`${config.baseDomain}/colors/${colorSlug}`);
-  check(colorDetailResponse, {
-    'GET /colors/:colorSlug status 200': (r) => r.status === 200,
-    'GET /colors/:colorSlug response time <= 1000ms': (r) => r.timings.duration <= 1000,
-  });
-
-  const colorSubjectsResponse = http.get(http.url`${config.baseDomain}/colors/${colorSlug}/subjects`);
-  check(colorSubjectsResponse, {
-    'GET /colors/:colorSlug/subjects status 200': (r) => r.status === 200,
-    'GET /colors/:colorSlug/subjects response time <= 1000ms': (r) => r.timings.duration <= 1000,
-  });
-
-  const colorSubjectDetailResponse = http.get(http.url`${config.baseDomain}/colors/${colorSlug}/subjects/${subjectId}`);
-  check(colorSubjectDetailResponse, {
-    'GET /colors/:colorSlug/subjects/:subjectId status 200': (r) => r.status === 200,
-    'GET /colors/:colorSlug/subjects/:subjectId response time <= 1000ms': (r) => r.timings.duration <= 1000,
-  });
-
-  const subjectsResponse = http.get(`${config.baseDomain}/subjects`);
-  check(subjectsResponse, {
-    'GET /subjects status 200': (r) => r.status === 200,
-    'GET /subjects response time <= 1000ms': (r) => r.timings.duration <= 1000,
-  });
-
-  const subjectDetailResponse = http.get(http.url`${config.baseDomain}/subjects/${subjectId}`);
-  check(subjectDetailResponse, {
-    'GET /subjects/:subjectId status 200': (r) => r.status === 200,
-    'GET /subjects/:subjectId response time <= 1000ms': (r) => r.timings.duration <= 1000,
-  });
-
-  const colorExtraDetailsResponse = http.get(http.url`${config.baseDomain}/colors/${colorSlug}/extra-details`);
-  check(colorExtraDetailsResponse, {
-    'GET /colors/:colorSlug/extra-details status 200': (r) => r.status === 200,
-    'GET /colors/:colorSlug/extra-details response time <= 1000ms': (r) => r.timings.duration <= 1000,
-    'GET /colors/:colorSlug/extra-details body contains "Extra Details"': (r) => typeof r.body === 'string' && r.body.includes('Extra Details'),
-    'GET /colors/:colorSlug/extra-details body contains colorSlug': (r) => typeof r.body === 'string' && r.body.includes(colorSlug),
-  });
+  if (colorCategory === 'Basic') {
+    group('extra-details', () => {
+      const colorExtraDetailsResponse = http.get(http.url`${config.baseDomain}/colors/${colorSlug}/extra-details`);
+      check(colorExtraDetailsResponse, {
+        'GET /colors/:colorSlug/extra-details status 200': (r) => r.status === 200,
+        'GET /colors/:colorSlug/extra-details response time <= 1000ms': (r) => r.timings.duration <= 1000,
+        'GET /colors/:colorSlug/extra-details body contains "Extra Details"': (r) => typeof r.body === 'string' && r.body.includes('Extra Details'),
+        'GET /colors/:colorSlug/extra-details body contains colorSlug': (r) => typeof r.body === 'string' && r.body.includes(colorSlug),
+      });
+    });
+  }
 }
